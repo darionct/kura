@@ -233,11 +233,15 @@ public class WatchdogServiceImpl implements WatchdogService, ConfigurableCompone
     }
 
     private void readProperties(Map<String, Object> properties) {
-        this.pingInterval = (Integer) properties.get(PROPERTY_PING_INTERVAL);
-        if (!((String) properties.get(PROPERTY_WD_DEVICE)).isEmpty()) {
+        if (properties.get(PROPERTY_PING_INTERVAL) != null) {
+            this.pingInterval = (Integer) properties.get(PROPERTY_PING_INTERVAL);
+        }
+        if (properties.get(PROPERTY_WD_DEVICE) != null && !((String) properties.get(PROPERTY_WD_DEVICE)).isEmpty()) {
             this.watchdogDevice = (String) properties.get(PROPERTY_WD_DEVICE);
         }
-        this.configEnabled = (Boolean) properties.get(PROPERTY_ENABLED);
+        if (properties.get(PROPERTY_ENABLED) != null) {
+            this.configEnabled = (Boolean) properties.get(PROPERTY_ENABLED);
+        }
         if (this.configEnabled) {
             try (PrintWriter wdWriter = new PrintWriter(WD_FILE);) {
                 wdWriter.write(this.watchdogDevice);

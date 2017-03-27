@@ -12,6 +12,7 @@ TIMEOUT_TIME=300
 function runPreRemove {
     if [ -f "${WD_TMP_FILE}" ]; then
         WATCHDOG_DEVICE=`cat ${WD_TMP_FILE}`
+        echo "Got watchdog ${WATCHDOG_DEVICE}" >> $LOG 2>&1
         preRemove &
         PID=$!
         
@@ -48,6 +49,9 @@ function preRemove {
     if [ -d "${INSTALL_DIR}/kura" ] ; then
       rm -rf ${INSTALL_DIR}/kura
     fi
+    
+    echo ""
+    echo "Uninstalling KURA... Done!"
 }
 ##############################################
 # END UTILITY FUNCTIONS

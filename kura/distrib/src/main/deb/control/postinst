@@ -14,6 +14,7 @@ TIMEOUT_TIME=300
 function runPostInstall {
     if [ -f "${WD_TMP_FILE}" ]; then
         WATCHDOG_DEVICE=`cat ${WD_TMP_FILE}`
+        echo "Got watchdog ${WATCHDOG_DEVICE}" >> $LOG 2>&1
         postInstall &
         PID=$!
         
