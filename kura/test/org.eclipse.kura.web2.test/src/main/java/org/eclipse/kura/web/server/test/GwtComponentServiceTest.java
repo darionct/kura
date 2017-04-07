@@ -27,7 +27,7 @@ public class GwtComponentServiceTest {
     public static void setUpClass() throws Exception {
         try {
             boolean ok = dependencyLatch.await(10, TimeUnit.SECONDS);
-            assertTrue("Dependencies OK", ok);
+            assertTrue("Dependencies OK? " + ok, ok);
         } catch (final InterruptedException e) {
             fail("OSGi dependencies unfulfilled");
         }
