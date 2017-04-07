@@ -86,6 +86,11 @@
 									<artifactId>objenesis</artifactId>
 									<version>${objenesis.version}</version>
 								</artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.servicemix.bundles</groupId>
+                                    <artifactId>org.apache.servicemix.bundles.jasper</artifactId>
+                                    <version>6.0.44_1</version>                                
+                                </artifactItem>
 							</artifactItems>
 							<stripVersion>true</stripVersion>
 							<outputDirectory>${project.basedir}/target/source/plugins</outputDirectory>
