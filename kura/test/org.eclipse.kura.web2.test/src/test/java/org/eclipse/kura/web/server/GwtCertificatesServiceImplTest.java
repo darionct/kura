@@ -10,7 +10,6 @@
 package org.eclipse.kura.web.server;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,6 +24,8 @@ import java.security.GeneralSecurityException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.kura.KuraException;
+import org.eclipse.kura.certificate.CertificatesService;
 import org.eclipse.kura.core.testutil.TestUtil;
 import org.eclipse.kura.ssl.SslManagerService;
 import org.eclipse.kura.web.Console;
@@ -42,6 +43,7 @@ import org.osgi.service.component.ComponentContext;
 public class GwtCertificatesServiceImplTest {
 
     private static SslManagerService sslManager;
+    private static CertificatesService certService;
 
     private GwtCertificatesServiceImpl gwtCertificatesService;
     private GwtXSRFToken xsrfToken;
@@ -49,11 +51,16 @@ public class GwtCertificatesServiceImplTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         sslManager = mock(SslManagerService.class);
-        ServiceReference<SslManagerService> svcRef = mock(ServiceReference.class);
+        ServiceReference<SslManagerService> svcRefSslManager = mock(ServiceReference.class);
+
+        certService = mock(CertificatesService.class);
+        ServiceReference<CertificatesService> svcRefCertificate = mock(ServiceReference.class);
 
         BundleContext bundleContext = mock(BundleContext.class);
-        when(bundleContext.getServiceReference(SslManagerService.class)).thenReturn(svcRef);
-        when(bundleContext.getService(svcRef)).thenReturn(sslManager);
+        when(bundleContext.getServiceReference(SslManagerService.class)).thenReturn(svcRefSslManager);
+        when(bundleContext.getService(svcRefSslManager)).thenReturn(sslManager);
+        when(bundleContext.getServiceReference(CertificatesService.class)).thenReturn(svcRefCertificate);
+        when(bundleContext.getService(svcRefCertificate)).thenReturn(certService);
 
         ComponentContext componentContext = mock(ComponentContext.class);
         when(componentContext.getBundleContext()).thenReturn(bundleContext);
@@ -102,13 +109,21 @@ public class GwtCertificatesServiceImplTest {
     }
 
     @Test
-    public void testStoreSSLPublicChain() throws GwtKuraException {
-        fail("Not yet implemented");
+    public void testStoreSSLPublicChain() throws GwtKuraException, IOException, GeneralSecurityException {
+        byte[] publicKey = Files.readAllBytes(Paths.get("src/test/resources/chain.p7b"));
+        Integer result = gwtCertificatesService.storeSSLPublicChain(xsrfToken,
+                new String(publicKey, StandardCharsets.UTF_8), "test");
+        assertEquals(new Integer(1), result);
+        verify(sslManager).installTrustCertificate(any(), any());
     }
 
     @Test
-    public void testStoreApplicationPublicChain() {
-        fail("Not yet implemented");
+    public void testStoreApplicationPublicChain() throws GwtKuraException, IOException, KuraException {
+        byte[] publicKey = Files.readAllBytes(Paths.get("src/test/resources/chain.p7b"));
+        Integer result = gwtCertificatesService.storeApplicationPublicChain(xsrfToken, new String(publicKey, StandardCharsets.UTF_8),
+                "test");
+        assertEquals(new Integer(1), result);
+        verify(certService).storeCertificate(any(), any());
     }
 
 }
