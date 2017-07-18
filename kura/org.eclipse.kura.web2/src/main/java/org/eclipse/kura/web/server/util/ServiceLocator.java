@@ -20,7 +20,6 @@ import org.eclipse.kura.web.Console;
 import org.eclipse.kura.web.shared.GwtKuraErrorCode;
 import org.eclipse.kura.web.shared.GwtKuraException;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
@@ -101,7 +100,7 @@ public class ServiceLocator {
      */
     public static <T, R> R applyToServiceOptionally(final Class<T> serviceClass, final ServiceFunction<T, R> function)
             throws GwtKuraException {
-        final BundleContext ctx = FrameworkUtil.getBundle(ServiceLocator.class).getBundleContext();
+        final BundleContext ctx = Console.getBundleContext();
         final ServiceReference<T> ref = ctx.getServiceReference(serviceClass);
 
         try {
@@ -151,7 +150,7 @@ public class ServiceLocator {
     public static <T> void withAllServices(final Class<T> serviceClass, String filter,
             final ServiceConsumer<T> consumer) throws GwtKuraException {
 
-        final BundleContext ctx = FrameworkUtil.getBundle(ServiceLocator.class).getBundleContext();
+        final BundleContext ctx = Console.getBundleContext();
 
         // get matching references
 
